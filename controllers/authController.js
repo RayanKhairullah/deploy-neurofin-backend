@@ -3,9 +3,9 @@ const Bcrypt = require('bcrypt');
 const { sendEmail } = require('../utils/email');
 const Jwt = require('jsonwebtoken');
 const Boom = require('@hapi/boom');
-const { nanoid } = require('nanoid');
 
 const registerHandler = async (request, h) => {
+  const { nanoid } = await import('nanoid');
   const { username, email, password } = request.payload;
   
   try {
