@@ -1,9 +1,9 @@
 const prisma = require('../utils/prisma');
+const { nanoid } = require('nanoid');
 const logger = require('../utils/logger');
 const Boom = require('@hapi/boom');
 
 const addExpenseHandler = async (request, h) => {
-  const { nanoid } = await import('nanoid');
   const { category, uangMasuk, uangKeluar, uangAkhir, description, transaction_date } = request.payload;
   const expenseid = nanoid(11);
 

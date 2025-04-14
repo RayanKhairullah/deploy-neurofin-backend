@@ -1,12 +1,44 @@
-# NeuroFin Backend AUTH & EXPENSES API  Documentation
+# API Neurofin Auth & Expenses API  Documentation
 
-NeuroFin Backend API adalah layanan backend yang dirancang untuk mengelola data/pencatatan pengeluaran (expenses). API ini dibangun menggunakan framework **Hapi.js** dan memanfaatkan **PostgreSQL** sebagai database, yang dikelola melalui **Sequelize ORM**.
+## Tecnology
+- **Bahasa:** `Java Script`
+- **Framework:** `Hapi.Js`
+- **Database:** `PostgreSQL`
+- **ORM:** `Prisma`
+- **dependencies:**  
+```json
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@hapi/hapi": "^21.4.0",
+    "@hapi/joi": "^17.1.1",
+    "@prisma/client": "^5.22.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "nanoid": "^5.1.5",
+    "nodemailer": "^6.10.0",
+    "pg": "^8.14.1",
+    "pg-hstore": "^2.3.4",
+    "pino": "^9.6.0",
+    "prisma": "^5.22.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+```
+- **Deploy database:** `Supabase` 
 
 ---
+## API Auth Origin
 - [ API Auth Origin ](https://github.com/AgungADL/Capstone-backend-auth)
 ---
-## Fitur Utama Expense
 
+## Fitur Utama
+- **Register**
+- **Login**
+- **verify Email**
 - **Menambahkan Pengeluaran (Add Expense)**
 - **Melihat Semua Pengeluaran (Get All Expenses)**
 - **Melihat Detail Pengeluaran Berdasarkan ID (Get Expense by ID)**
@@ -44,33 +76,29 @@ cd NeuroFin
 npm install
 ```
 
-### Konfigurasi Database
-Ganti file `config/config.example.json` menjadi `config/config.json`
-```
-kemudian isi keterangannya.
-"development": {
-    "username": "username",
-    "password": "password",
-    "database": "database_development",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
-  },
-```
-  
 ### .Env
 Ganti file `.env.example` menjadi `.env` dan sesuaikan isi konfigurasinya
 ```
+# email service configuration
 EMAIL_SERVICE=gmail
 EMAIL_USER=yourgmail@gmail.com
 EMAIL_PASS=your_app_password
-JWT_SECRET=jwtsecret
+
+JWT_SECRET=
 PORT=9000
+
+# Connect to Supabase via connection pooling.
+DATABASE_URL=your_database_url
+# Direct connection to the database. Used for migrations.
+DIRECT_URL=your_database_url
 ```
 
-
 ### Migrasi Database
+Pastikan folder "20250413035715_init" ada, jika belum ada jalankan perintah:
 ```bash
-npx sequelize-cli db:migrate
+npx prisma migrate dev
+
+untuk mengekstrak schema database ke dalam file schema.prisma
 ```
 
 ### Menjalankan Server di Local
@@ -82,10 +110,68 @@ Server akan berjalan di [http://localhost:9000](http://localhost:9000).
 ---
 
 ## Endpoint API Expense
+
+**Headers:** `Content-Type: application/json` untuk endpoint register, verify-email, dan login
+### Register 
+- **URL:** `POST  /register`
+- **Request example:**
+  ```json
+  {
+    "username": "username",
+    "email": "emailemail@gmail.com",
+    "password": "securepassword"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+      "status": "success",
+      "message": "Registrasi berhasil, cek email untuk verifikasi"
+  }
+  ```
+
+### Verify Email 
+- **URL:** `POST /verify-email`
+- **Request example:**
+  ```json
+      {
+        "email": "emailemail@gmail.com",
+        "code": "pfoGvpK1ba"
+      }
+  ```
+- **Response:**
+  ```json
+  {
+      "status": "success",
+      "message": "Email berhasil diverifikasi"
+  }
+  ```
+
+### Login 
+- **URL:** `POST /login`
+- **Request example:**
+  ```json
+  {
+    "email": "mbakrin2ai@gmail.com",
+    "password": "securepassword"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+      "status": "success",
+      "message": "Login berhasil",
+      "data": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1iYWtyaW4yxxxxxx9tIiwiaWF0IjoxNzQ0NTk1NDU2LCJleHAiOjE3NDQ2MDk4NTZ9.eddfrgYbKQNR1Px0q9KhPwuElfELvVnTblrANSifth0"
+      }
+  }
+  ```
+
+**Headers:** `Content-Type: application/json` header untuk semua endpoint expense
+### 1. Create Expense
+
 - **URL:** `POST /expenses`
-- **Headers:** `Content-Type: application/json`
-- **Headers:** `Authorization: Bearer {{authToken}}`
-- **Body:**
+- **Request example:**
   ```json
   {
     "category": "Food",
@@ -167,9 +253,7 @@ Server akan berjalan di [http://localhost:9000](http://localhost:9000).
 ### 4. Update Expense by ID
 
 - **URL:** `PUT /expenses/{expenseid}`
-- **Headers:** `Content-Type: application/json`
-- **Headers:** `Authorization: Bearer {{authToken}}`
-- **Body:**
+- **Request:**
   ```json
   {
     "category": "Transport",
