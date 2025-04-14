@@ -96,7 +96,7 @@ DIRECT_URL=your_database_url
 ### Migrasi Database
 Pastikan folder "20250413035715_init" ada, jika belum ada jalankan perintah:
 ```bash
-npx prisma migrate dev
+npx prisma migrate dev --name init
 
 untuk mengekstrak schema database ke dalam file schema.prisma
 ```
