@@ -1,17 +1,18 @@
-import { nanoid } from 'nanoid';
-import prisma from '../utils/db.js';
-import logger from '../utils/logger.js';
-import Boom from '@hapi/boom';  
+const pool = require('../utils/db');
+const { nanoid } = require('nanoid');
+const logger = require('../utils/logger');
+const Boom = require('@hapi/boom');
 
 const addExpenseHandler = async (request, h) => {
   const { category, uangMasuk, uangKeluar, uangAkhir, description, transaction_date } = request.payload;
   const expenseid = nanoid(11);
 
   try {
-    const expense = await prisma.expense.create({
+    const expense = await pool.expense.create({
       data: {
         expenseid,
         category,
+        // Memetakan field input ke nama field di schema pool
         uangmasuk: uangMasuk,
         uangkeluar: uangKeluar,
         uangakhir: uangAkhir,
@@ -33,7 +34,7 @@ const addExpenseHandler = async (request, h) => {
 
 const getAllExpensesHandler = async (request, h) => {
   try {
-    const expenses = await prisma.expense.findMany();
+    const expenses = await pool.expense.findMany();
     return {
       status: 'success',
       data: { expenses },
@@ -47,7 +48,7 @@ const getAllExpensesHandler = async (request, h) => {
 const getExpenseByIdHandler = async (request, h) => {
   const { expenseid } = request.params;
   try {
-    const expense = await prisma.expense.findUnique({
+    const expense = await pool.expense.findUnique({
       where: { expenseid },
     });
     if (!expense) {
@@ -76,7 +77,7 @@ const updateExpenseByIdHandler = async (request, h) => {
   const { category, uangMasuk, uangKeluar, uangAkhir, description, transaction_date } = request.payload;
 
   try {
-    const expense = await prisma.expense.update({
+    const expense = await pool.expense.update({
       where: { expenseid },
       data: {
         category,
@@ -93,6 +94,7 @@ const updateExpenseByIdHandler = async (request, h) => {
       message: 'Expense berhasil diperbarui',
     });
   } catch (error) {
+    // pool mengembalikan error dengan kode 'P2025' ketika record tidak ditemukan
     if (error.code === 'P2025') {
       throw Boom.notFound('Expense gagal diperbarui. Id tidak ditemukan');
     }
@@ -104,7 +106,7 @@ const updateExpenseByIdHandler = async (request, h) => {
 const deleteExpenseByIdHandler = async (request, h) => {
   const { expenseid } = request.params;
   try {
-    await prisma.expense.delete({
+    await pool.expense.delete({
       where: { expenseid },
     });
 
@@ -121,7 +123,7 @@ const deleteExpenseByIdHandler = async (request, h) => {
   }
 };
 
-export default {
+module.exports = {
   addExpenseHandler,
   getAllExpensesHandler,
   getExpenseByIdHandler,

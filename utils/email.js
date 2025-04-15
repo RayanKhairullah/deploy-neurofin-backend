@@ -1,6 +1,6 @@
-import nodemailer from 'nodemailer';
+const nodemailer = require('nodemailer');
 
-export const sendEmail = async (to, subject, text) => {
+const sendEmail = async (to, subject, text) => {
   try {
     const transporter = nodemailer.createTransport({
       service: process.env.EMAIL_SERVICE,
@@ -24,3 +24,5 @@ export const sendEmail = async (to, subject, text) => {
     throw new Error('Failed to send email');
   }
 };
+
+module.exports = { sendEmail };

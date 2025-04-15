@@ -1,7 +1,7 @@
-import Boom from '@hapi/boom';
+const Boom = require('@hapi/boom');
 
 const validationHandler = (request, h, error) => {
   throw Boom.badRequest(error.details[0].message);
 };
 
-export default validationHandler;
+module.exports = validationHandler;

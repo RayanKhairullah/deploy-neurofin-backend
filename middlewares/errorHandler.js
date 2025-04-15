@@ -1,5 +1,5 @@
-import logger from '../utils/logger.js';
-import Boom from '@hapi/boom';
+const logger = require('../utils/logger');
+const Boom = require('@hapi/boom');
 
 const errorHandler = (error, h) => {
   if (Boom.isBoom(error)) {
@@ -16,4 +16,4 @@ const errorHandler = (error, h) => {
   }).code(500);
 };
 
-export default errorHandler;
+module.exports = errorHandler;

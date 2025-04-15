@@ -1,11 +1,5 @@
-import Joi from 'joi';
-import authController from '../controllers/authController.js';
-
-const {
-  registerHandler, 
-  verifyEmailHandler, 
-  loginHandler
-} = authController;
+const Joi = require('joi');
+const { registerHandler, verifyEmailHandler, loginHandler } = require('../controllers/authController');
 
 const authRoutes = [
   {
@@ -31,7 +25,7 @@ const authRoutes = [
         payload: Joi.object({
           email: Joi.string().email().required(),
           code: Joi.string().min(6).required(),
-        }),
+          }),
       },
     },
   },
@@ -50,4 +44,4 @@ const authRoutes = [
   },
 ];
 
-export default authRoutes;
+module.exports = authRoutes;

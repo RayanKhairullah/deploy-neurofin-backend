@@ -1,20 +1,20 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
-import Hapi from '@hapi/hapi';
-import routes from '../routes/expenseRoutes.js';
-import authRoutes from '../routes/authRoutes.js';
-import prisma from '../utils/prisma.js';
-import errorHandler from '../middlewares/errorHandler.js';
+require('dotenv').config();
+const Hapi = require('@hapi/hapi');
+const routes = require('../routes/expenseRoutes');
+const authRoutes = require('../routes/authRoutes');
+const pool = require('../utils/db');
+const errorHandler = require('../middlewares/errorHandler');
 
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT,
+    port: process.env.PORT || 9000,
     host: 'localhost',
   });
 
+  server.app.db = pool;
+
   server.route([...authRoutes, ...routes]);
-  
+
   server.ext('onPreResponse', (request, h) => {
     const response = request.response;
     if (response.isBoom) {
@@ -23,15 +23,8 @@ const init = async () => {
     return h.continue;
   });
 
-  try {
-    await prisma.$connect();
-    console.log('Database connected successfully.');
-    await server.start();
-    console.log(`Server running on ${server.info.uri}`);
-  } catch (error) {
-    console.error('Unable to start server:', error);
-    process.exit(1);
-  }
+  await server.start();
+  console.log(`Server running on ${server.info.uri}`);
 };
 
 init();

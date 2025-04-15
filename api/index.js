@@ -1,30 +1,45 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import serverlessHapi from 'serverless-hapi';
 import Hapi from '@hapi/hapi';
 import routes from '../routes/expenseRoutes.js';
 import authRoutes from '../routes/authRoutes.js';
 import errorHandler from '../middlewares/errorHandler.js';
+const pool = require('../utils/db.js');
 
-const init = async () => {
-  const server = Hapi.server({
-    port: process.env.PORT || 3000,
-    host: '0.0.0.0',
-  });
+let server;
 
-  server.route([...authRoutes, ...routes]);
+async function initServer() {
+  if (!server) {
+    server = Hapi.server({ port: 3000, host: 'localhost' });
+    server.app.db = pool;
+    server.route([...authRoutes, ...routes]);
 
-  server.ext('onPreResponse', (request, h) => {
-    const response = request.response;
-    if (response.isBoom) {
-      return errorHandler(response, h);
-    }
-    return h.continue;
-  });
+    server.ext('onPreResponse', (request, h) => {
+      const response = request.response;
+      if (response.isBoom) {
+        return errorHandler(response, h);
+      }
+      return h.continue;
+    });
 
-  // Tidak perlu koneksi database di sini untuk serverless
+    await server.initialize();
+  }
   return server;
-};
+}
 
-module.exports.handler = serverlessHapi(init);
+module.exports = async (req, res) => {
+  try {
+    const server = await initServer();
+    const response = await server.inject({
+      method: req.method,
+      url: req.url,
+      headers: req.headers,
+      payload: req.body,
+    });
+    res.status(response.statusCode).json(response.result);
+  } catch (error) {
+    console.error('Error processing request:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

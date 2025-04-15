@@ -1,16 +1,16 @@
-import { nanoid } from 'nanoid';
-import prisma from '../utils/db.js';
-import Bcrypt from 'bcrypt';
-import { sendEmail } from '../utils/email.js';
-import Jwt from 'jsonwebtoken';
-import Boom from '@hapi/boom';
+const pool = require('../utils/db');
+const Bcrypt = require('bcrypt');
+const { sendEmail } = require('../utils/email');
+const Jwt = require('jsonwebtoken');
+const { nanoid } = require('nanoid');
+const Boom = require('@hapi/boom');
 
 const registerHandler = async (request, h) => {
   const { username, email, password } = request.payload;
   
   try {
     // Cek apakah user sudah ada
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await pool.user.findUnique({ where: { email } });
     if (existingUser) {
       return h.response({
         status: 'fail',
@@ -21,12 +21,13 @@ const registerHandler = async (request, h) => {
     const hashedPassword = await Bcrypt.hash(password, 10);
     const verificationCode = nanoid(10);
   
-    await prisma.user.create({
+    await pool.user.create({
       data: {
         username,
         email,
         password: hashedPassword,
         verificationCode,
+        // Pastikan field verified di schema Anda bersifat opsional atau default false
       },
     });
   
@@ -61,7 +62,7 @@ const verifyEmailHandler = async (request, h) => {
   const { email, code } = request.payload;
   
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await pool.user.findUnique({ where: { email } });
   
     if (!user) {
       return h.response({
@@ -77,7 +78,7 @@ const verifyEmailHandler = async (request, h) => {
       }).code(400);
     }
   
-    await prisma.user.update({
+    await pool.user.update({
       where: { email },
       data: {
         verified: true,
@@ -100,7 +101,7 @@ const verifyEmailHandler = async (request, h) => {
 const loginHandler = async (request, h) => {
   const { email, password } = request.payload;
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await pool.user.findUnique({ where: { email } });
   if (!user || !(await Bcrypt.compare(password, user.password))) {
     throw Boom.unauthorized('Email atau kata sandi tidak valid');
   }
@@ -122,4 +123,4 @@ const loginHandler = async (request, h) => {
   }).code(200);
 };
 
-export default { registerHandler, verifyEmailHandler, loginHandler };
+module.exports = { registerHandler, verifyEmailHandler, loginHandler };

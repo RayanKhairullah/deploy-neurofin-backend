@@ -1,5 +1,5 @@
-import Jwt from 'jsonwebtoken';
-import Boom from '@hapi/boom';
+const Jwt = require('jsonwebtoken');
+const Boom = require('@hapi/boom');
 
 const authMiddleware = (request, h) => {
   const authHeader = request.headers.authorization;
@@ -18,4 +18,4 @@ const authMiddleware = (request, h) => {
   }
 };
 
-export default authMiddleware;
+module.exports = authMiddleware;
