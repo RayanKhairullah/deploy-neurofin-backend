@@ -8,7 +8,27 @@ const errorHandler = require('../middlewares/errorHandler');
 const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 9000,
-    host: 'localhost',
+    host: process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost',
+    routes: {
+      cors: {
+        origin: ['*'],
+        credentials: true,
+        headers: ['Accept', 'Authorization', 'Content-Type', 'If-None-Match'],
+        exposedHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+        maxAge: 86400
+      }
+    }
+  });
+
+  // Register cookie support
+  server.state('token', {
+    ttl: 1000 * 60 * 60 * 4, // 4 hours
+    isSecure: process.env.NODE_ENV === 'production',
+    isHttpOnly: true,
+    encoding: 'none',
+    clearInvalid: false,
+    strictHeader: true,
+    path: '/'
   });
 
   server.app.db = prisma;
@@ -25,6 +45,16 @@ const init = async () => {
 
   await server.start();
   console.log(`Server running on ${server.info.uri}`);
+  return server;
 };
 
-init();
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled rejection:', err);
+  process.exit(1);
+});
+
+if (require.main === module) {
+  init();
+}
+
+module.exports = { init };

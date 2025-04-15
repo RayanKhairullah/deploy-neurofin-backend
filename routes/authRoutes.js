@@ -1,5 +1,3 @@
-// routes/authRoutes.js
-
 const Joi = require("joi");
 const {
   registerHandler,

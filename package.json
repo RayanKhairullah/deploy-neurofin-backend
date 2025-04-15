@@ -9,21 +9,21 @@
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.4.0",
     "@hapi/joi": "^17.1.1",
-    "@prisma/client": "^5.22.0",
+    "@prisma/client": "^6.6.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "nanoid": "^5.1.5",
+    "nanoid": "^4.0.2",
     "nodemailer": "^6.10.0",
     "pg": "^8.14.1",
     "pg-hstore": "^2.3.4",
     "pino": "^9.6.0",
-    "prisma": "^6.6.0 ",
     "serverless-hapi": "^3.0.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "prisma": "^6.6.0"
   }
 }
