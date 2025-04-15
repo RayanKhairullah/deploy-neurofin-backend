@@ -1,8 +1,8 @@
+import { nanoid } from 'nanoid';
 const prisma = require('../utils/prisma');
 const Bcrypt = require('bcrypt');
 const { sendEmail } = require('../utils/email');
 const Jwt = require('jsonwebtoken');
-const { nanoid } = require('nanoid');
 const Boom = require('@hapi/boom');
 
 const registerHandler = async (request, h) => {

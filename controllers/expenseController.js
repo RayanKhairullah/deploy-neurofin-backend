@@ -1,5 +1,5 @@
+import { nanoid } from 'nanoid';
 const prisma = require('../utils/prisma');
-const { nanoid } = require('nanoid');
 const logger = require('../utils/logger');
 const Boom = require('@hapi/boom');
 
