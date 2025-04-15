@@ -4,9 +4,7 @@
   "type": "module",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "postinstall": "prisma generate",
-    "build": "prisma generate && vercel build"
+    "dev": "nodemon src/server.js"
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",
