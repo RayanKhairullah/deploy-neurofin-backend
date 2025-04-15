@@ -1,9 +1,9 @@
 import { nanoid } from 'nanoid';
-const prisma = require('../utils/prisma');
-const Bcrypt = require('bcrypt');
-const { sendEmail } = require('../utils/email');
-const Jwt = require('jsonwebtoken');
-const Boom = require('@hapi/boom');
+import prisma from '../utils/prisma.js';
+import Bcrypt from 'bcrypt';
+import { sendEmail } from '../utils/email.js';
+import Jwt from 'jsonwebtoken';
+import Boom from '@hapi/boom';
 
 const registerHandler = async (request, h) => {
   const { username, email, password } = request.payload;
@@ -27,7 +27,6 @@ const registerHandler = async (request, h) => {
         email,
         password: hashedPassword,
         verificationCode,
-        // Pastikan field verified di schema Anda bersifat opsional atau default false
       },
     });
   
@@ -123,4 +122,4 @@ const loginHandler = async (request, h) => {
   }).code(200);
 };
 
-module.exports = { registerHandler, verifyEmailHandler, loginHandler };
+export default { registerHandler, verifyEmailHandler, loginHandler };

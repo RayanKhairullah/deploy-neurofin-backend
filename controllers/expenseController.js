@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
-const prisma = require('../utils/prisma');
-const logger = require('../utils/logger');
-const Boom = require('@hapi/boom');
+import prisma from '../utils/prisma.js';
+import logger from '../utils/logger.js';
+import Boom from '@hapi/boom';
 
 const addExpenseHandler = async (request, h) => {
   const { category, uangMasuk, uangKeluar, uangAkhir, description, transaction_date } = request.payload;
@@ -12,7 +12,6 @@ const addExpenseHandler = async (request, h) => {
       data: {
         expenseid,
         category,
-        // Memetakan field input ke nama field di schema Prisma
         uangmasuk: uangMasuk,
         uangkeluar: uangKeluar,
         uangakhir: uangAkhir,
@@ -94,7 +93,6 @@ const updateExpenseByIdHandler = async (request, h) => {
       message: 'Expense berhasil diperbarui',
     });
   } catch (error) {
-    // Prisma mengembalikan error dengan kode 'P2025' ketika record tidak ditemukan
     if (error.code === 'P2025') {
       throw Boom.notFound('Expense gagal diperbarui. Id tidak ditemukan');
     }
@@ -123,7 +121,7 @@ const deleteExpenseByIdHandler = async (request, h) => {
   }
 };
 
-module.exports = {
+export default {
   addExpenseHandler,
   getAllExpensesHandler,
   getExpenseByIdHandler,

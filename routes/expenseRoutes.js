@@ -1,13 +1,16 @@
-const Joi = require('joi');
+import Joi from 'joi';
+import expenseController from '../controllers/expenseController.js';
+
 const {
   addExpenseHandler,
   getAllExpensesHandler,
   getExpenseByIdHandler,
   updateExpenseByIdHandler,
   deleteExpenseByIdHandler,
-} = require('../controllers/expenseController');
-const validationHandler = require('../middlewares/validationHandler');
-const authMiddleware = require('../middlewares/authMiddleware');
+} = expenseController;
+
+import validationHandler from '../middlewares/validationHandler.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
 
 const routes = [
   {
@@ -87,4 +90,4 @@ const routes = [
   },
 ];
 
-module.exports = routes;
+export default routes;

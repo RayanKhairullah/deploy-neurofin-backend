@@ -1,9 +1,11 @@
-require('dotenv').config();
-const Hapi = require('@hapi/hapi');
-const routes = require('../routes/expenseRoutes');
-const authRoutes = require('../routes/authRoutes');
-const prisma = require('../utils/prisma');
-const errorHandler = require('../middlewares/errorHandler');
+import dotenv from 'dotenv';
+dotenv.config();
+
+import Hapi from '@hapi/hapi';
+import routes from '../routes/expenseRoutes.js';
+import authRoutes from '../routes/authRoutes.js';
+import prisma from '../utils/prisma.js';
+import errorHandler from '../middlewares/errorHandler.js';
 
 const init = async () => {
   const server = Hapi.server({
