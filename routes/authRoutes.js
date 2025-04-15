@@ -1,10 +1,19 @@
-const Joi = require('joi');
-const { registerHandler, verifyEmailHandler, loginHandler } = require('../controllers/authController');
+// routes/authRoutes.js
+
+const Joi = require("joi");
+const {
+  registerHandler,
+  verifyEmailHandler,
+  loginHandler,
+  meHandler,
+  logoutHandler,
+} = require("../controllers/authController");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 const authRoutes = [
   {
-    method: 'POST',
-    path: '/register',
+    method: "POST",
+    path: "/register",
     handler: registerHandler,
     options: {
       validate: {
@@ -17,21 +26,21 @@ const authRoutes = [
     },
   },
   {
-    method: 'POST',
-    path: '/verify-email',
+    method: "POST",
+    path: "/verify-email",
     handler: verifyEmailHandler,
     options: {
       validate: {
         payload: Joi.object({
           email: Joi.string().email().required(),
           code: Joi.string().min(6).required(),
-          }),
+        }),
       },
     },
   },
   {
-    method: 'POST',
-    path: '/login',
+    method: "POST",
+    path: "/login",
     handler: loginHandler,
     options: {
       validate: {
@@ -40,6 +49,22 @@ const authRoutes = [
           password: Joi.string().required(),
         }),
       },
+    },
+  },
+  {
+    method: "GET",
+    path: "/me",
+    handler: meHandler,
+    options: {
+      pre: [{ method: authMiddleware }],
+    },
+  },
+  {
+    method: "POST",
+    path: "/logout",
+    handler: logoutHandler,
+    options: {
+      pre: [{ method: authMiddleware }],
     },
   },
 ];

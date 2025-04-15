@@ -2,7 +2,7 @@ require('dotenv').config();
 const Hapi = require('@hapi/hapi');
 const routes = require('../routes/expenseRoutes');
 const authRoutes = require('../routes/authRoutes');
-const pool = require('../utils/db');
+const prisma = require('../utils/prismaClient');
 const errorHandler = require('../middlewares/errorHandler');
 
 const init = async () => {
@@ -11,7 +11,7 @@ const init = async () => {
     host: 'localhost',
   });
 
-  server.app.db = pool;
+  server.app.db = prisma;
 
   server.route([...authRoutes, ...routes]);
 
