@@ -5,13 +5,12 @@ import serverlessHapi from 'serverless-hapi';
 import Hapi from '@hapi/hapi';
 import routes from '../routes/expenseRoutes.js';
 import authRoutes from '../routes/authRoutes.js';
-import prisma from '../utils/prisma.js';
 import errorHandler from '../middlewares/errorHandler.js';
 
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT || 3000, 
-    host: '0.0.0.0',              
+    port: process.env.PORT || 3000,
+    host: '0.0.0.0',
   });
 
   server.route([...authRoutes, ...routes]);
@@ -24,14 +23,7 @@ const init = async () => {
     return h.continue;
   });
 
-  try {
-    await prisma.$connect();
-    console.log('Database connected successfully.');
-  } catch (err) {
-    console.error('Failed to connect to database:', err);
-    throw err;
-  }
-
+  // Tidak perlu koneksi database di sini untuk serverless
   return server;
 };
 

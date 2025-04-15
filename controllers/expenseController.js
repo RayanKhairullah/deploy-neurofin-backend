@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
-import prisma from '../utils/prisma.js';
+import prisma from '../utils/db.js';
 import logger from '../utils/logger.js';
-import Boom from '@hapi/boom';
+import Boom from '@hapi/boom';  
 
 const addExpenseHandler = async (request, h) => {
   const { category, uangMasuk, uangKeluar, uangAkhir, description, transaction_date } = request.payload;

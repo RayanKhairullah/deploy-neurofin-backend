@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import prisma from '../utils/prisma.js';
+import prisma from '../utils/db.js';
 import Bcrypt from 'bcrypt';
 import { sendEmail } from '../utils/email.js';
 import Jwt from 'jsonwebtoken';
