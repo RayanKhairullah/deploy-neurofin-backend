@@ -15,6 +15,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Expense" (
     "expenseid" TEXT NOT NULL,
+    "id_user" INTEGER NOT NULL,
     "category" TEXT NOT NULL,
     "uangmasuk" DECIMAL(65,30) NOT NULL DEFAULT 0.00,
     "uangkeluar" DECIMAL(65,30) NOT NULL DEFAULT 0.00,
@@ -29,3 +30,6 @@ CREATE TABLE "Expense" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- AddForeignKey
+ALTER TABLE "Expense" ADD CONSTRAINT "Expense_id_user_fkey" FOREIGN KEY ("id_user") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

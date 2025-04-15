@@ -4,10 +4,9 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
-}
-        
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}   
 
 model User {
   id                Int      @id @default(autoincrement())
@@ -18,10 +17,13 @@ model User {
   verificationCode  String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+
+  expenses          Expense[]
 }
 
 model Expense {
   expenseid         String   @id
+  id_user           Int      
   category          String
   uangmasuk         Decimal  @default(0.00)
   uangkeluar        Decimal  @default(0.00)
@@ -30,4 +32,6 @@ model Expense {
   transaction_date  DateTime
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+
+  user              User     @relation(fields: [id_user], references: [id])
 }
